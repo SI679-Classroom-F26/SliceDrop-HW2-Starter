@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import request from "supertest";
 import { app } from "../app";
-import { CUSTOMER_TOKEN } from "../constants";
+import { CUSTOMER_TOKEN, STAFF_TOKEN } from "../constants";
 import { resetData, startTestDb, stopTestDb } from "./mongo-helper";
 
 beforeAll(startTestDb);
@@ -52,7 +52,7 @@ describe("400 on a malformed order id", () => {
   it("turns the id away before it can reach the database", async () => {
     const res = await request(app)
       .get("/orders/badID123")
-      .set("Authorization", `Bearer ${CUSTOMER_TOKEN}`);
+      .set("Authorization", `Bearer ${STAFF_TOKEN}`);
     expect(res.status).toBe(400);
     expect(res.body.error).toBeDefined();
   });
@@ -74,7 +74,7 @@ describe("500 when our own code throws", () => {
     const { app: freshApp } = await import("../app.js");
     const res = await request(freshApp)
       .post("/orders")
-      .set("Authorization", `Bearer ${CUSTOMER_TOKEN}`)
+      .set("Authorization", `Bearer ${STAFF_TOKEN}`)
       .send({ customerName: "Ada", items: [{ menuItemId: "soda", quantity: 1, size: "20 oz" }] });
 
     vi.doUnmock("../db/orders-repository");
