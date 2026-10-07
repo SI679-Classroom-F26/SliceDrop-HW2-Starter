@@ -74,7 +74,7 @@ describe("500 when our own code throws", () => {
     const { app: freshApp } = await import("../app.js");
     const res = await request(freshApp)
       .post("/orders")
-      .set("Authorization", `Bearer ${STAFF_TOKEN}`)
+      .set("Authorization", `Bearer ${CUSTOMER_TOKEN}`)
       .send({ customerName: "Ada", items: [{ menuItemId: "soda", quantity: 1, size: "20 oz" }] });
 
     vi.doUnmock("../db/orders-repository");
